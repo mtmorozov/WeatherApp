@@ -66,6 +66,15 @@ class LocalStorage {
 
 // MARK: - Common
 extension LocalStorage {
+    private func enqueuBlock(_ block:@escaping (NSManagedObjectContext) -> ()) {
+        self.queue.addOperation { [unowned self] in
+            let context = self.persistentContainer.newBackgroundContext()
+            context.performAndWait {
+                block(context)
+            }
+        }
+    }
+    
     private func save(context: NSManagedObjectContext? = nil) {
         let context = context ?? persistentContainer.viewContext
         
@@ -78,7 +87,7 @@ extension LocalStorage {
     }
     
     func clear(onComplete:@escaping ()->()) {
-        persistentContainer.performBackgroundTask { context in
+        enqueuBlock { context in
             let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CurrentWeather")
             if let weatherRecords = try? context.fetch(fetchRequest) as! [CurrentWeather] {
                 for weatherRecord in weatherRecords {
@@ -112,7 +121,7 @@ extension LocalStorage {
     }
     
     func createOrUpdateCityCurrentWeather(_ cityCurrentWeather: CityCurrentWeather, onComplete: (()->())? = nil) {
-        persistentContainer.performBackgroundTask { context in
+        enqueuBlock { context in
             if self.getCity(id: cityCurrentWeather.cityId, context: context) == nil {
                 let city = NSEntityDescription.insertNewObject(forEntityName: "City", into: context) as! City
                 city.title = cityCurrentWeather.title
@@ -151,7 +160,7 @@ extension LocalStorage {
 // MARK: - City
 extension LocalStorage {
     func deleteCity(id: String) {
-        persistentContainer.performBackgroundTask { context in
+        enqueuBlock { context in
             if let city = self.getCity(id: id, context: context) {
                 context.delete(city)
                 
@@ -162,7 +171,7 @@ extension LocalStorage {
     
     func createCity(title: String, cityId: String) {
         if getCity(id: cityId) == nil {
-            persistentContainer.performBackgroundTask { context in
+            enqueuBlock { context in
                 let city = NSEntityDescription.insertNewObject(forEntityName: "City", into: context) as! City
                 
                 city.title = title
@@ -219,7 +228,7 @@ extension LocalStorage {
 // MARK: - ForecastRecord
 extension LocalStorage {
     func createOrUpdateForecastRecord(forecastItems: [Forecast], cityId: String) {
-        persistentContainer.performBackgroundTask { context in
+        enqueuBlock { context in
             if forecastItems.count > 0 {
                 let forecastRecord = self.getCityForecast(cityId: cityId, context: context) ??  NSEntityDescription.insertNewObject(forEntityName: "ForecastRecord", into: context) as! ForecastRecord
                 
