@@ -8,8 +8,7 @@
 
 import UIKit
 
-class WeatherListViewController: UIViewController
-{
+final class WeatherListViewController: UIViewController {
     /// Outlets
     @IBOutlet weak var tableView: UITableView!
     var editBarButtonItem: UIBarButtonItem!
@@ -18,10 +17,8 @@ class WeatherListViewController: UIViewController
     var cityCurrentWeatherItems: [CityCurrentWeather] = []
 }
 
-extension WeatherListViewController
-{
-    func loadDataFromDatabase()
-    {
+extension WeatherListViewController {
+    func loadDataFromDatabase() {
         cityCurrentWeatherItems = getCurrentWeathersFromDatabase()
     }
 }

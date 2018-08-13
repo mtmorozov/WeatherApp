@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WeatherDetailViewController: UIViewController {
+final class WeatherDetailViewController: UIViewController {
     /// Outlets
     @IBOutlet weak var humidityLabel:           UILabel!
     @IBOutlet weak var pressureLabel:           UILabel!
