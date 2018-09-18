@@ -28,11 +28,11 @@ class LocalStorage {
             return mockPersistantContainer
         }
         else {
-            return regularRegularPersistentContainer
+            return regularPersistentContainer
         }
     }()
     
-    private lazy var regularRegularPersistentContainer: NSPersistentContainer = {
+    private lazy var regularPersistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "WeatherApp")
         container.loadPersistentStores(completionHandler: {
             (storeDescription, error) in
@@ -55,7 +55,7 @@ class LocalStorage {
         container.persistentStoreDescriptions = [description]
         container.loadPersistentStores { (description, error) in
             precondition( description.type == NSInMemoryStoreType )
-            
+
             if let error = error {
                 fatalError("Create an in-mem coordinator failed \(error)")
             }
