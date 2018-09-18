@@ -74,7 +74,6 @@ extension WeatherListViewController {
         var resultArray: [CityCurrentWeather] = []
         
         if let cities = LocalStorage.sharedInstance.getCities() {
-            
             for city in cities {
                 if let currentWeather = LocalStorage.sharedInstance.getCityCurrentWeather(cityId: city.id!) {
                     let cityCurrentWeather = CityCurrentWeather(title: city.title!,
